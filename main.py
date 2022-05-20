@@ -201,7 +201,6 @@ def add_a_show():
                     i=input("enter certification")
                     j=input("enter release date (YYYY-MM-DD)")
                     Query=("insert into movies values(%s,%s,%s,%s,%s,%s,%s,%s)")
-                    # Query=("insert into movies(FNO,AIRLINES,SOURCE,DESTINATION,FARE,FLIGHT_DATE,FLIGHT_TIME) values(%s,%s,%s,%s,%s,%s,%s)")
                     data=(h,aa,b,c,ff,g,i,j)
                     cursor.execute(Query,data)
                     db.commit()
@@ -484,7 +483,7 @@ while True:
                     try:
 
                         print("-----------------------------------\nAdmin Menu: \n----------------------------------- \n 1.Available shows","\n","2.Plot of prices across various seats","\n","3.Add a new show or a new movie","\n","4.Edit a show or a movie","\n","5.Delete a show of a movie","\n","6.Delete a movie","\n","7.View all bookings","\n","8.Exit from Admin Menu","\n","9.Exit from the Cinema System","\n")
-                        c=int(input("Enter your choice: (1/2/3/4/5/6/7/8) \n"))
+                        c=int(input("Enter your choice: (1/2/3/4/5/6/7/8/9) \n"))
 
                         if c==1:
                             all_shows()
@@ -506,7 +505,7 @@ while True:
                             print("Goodbye")
                             quit()
                         else:
-                            print("Enter a number between 1 to 8 only")                                            
+                            print("Enter a number between 1 to 9 only")                                            
 
                     except(ValueError,TypeError,NameError):
                         print("enter correct values")
