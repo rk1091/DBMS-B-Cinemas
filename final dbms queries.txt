@@ -1,0 +1,96 @@
+#MYSQL COMMANDS FOR PROJECT-
+
+create database bpower;
+use bpower;
+
+create table usr(user_name varchar(20) not null ,pass varchar(20) not null constraint pass_check check(length(pass) > 7 ),mob_no bigint(10) not null ,user_id varchar(20) constraint uid_pk primary key);
+insert into usr values('Aaditya','aaditya@1234',9542164544,'aaditya10' );
+insert into usr values('Vishal','vishal@1234',9815984840,'vishal23');
+insert into usr values('Gaurang','gaurang@1234',9542164544,'gaurang4' );
+insert into usr values('Riya Kapoor','riya@1234',9013272454,'rk91');
+insert into usr values('Arjun Rai','arjun@1234',8054020039,'arjun53' );
+insert into usr values('Pranav Gupta','pranav@1234',7011421640,'pranav99');
+
+select * from usr;
+
+
+create table movies(movie_id varchar(10) primary key,movie_name varchar(50) not null,duration varchar(10) not null,language varchar(5) constraint lang_check check(language in('ENG', 'HIN','PUNJABI')),format varchar(5) constraint type_check check(format in('3D', '2D','4DX')),genre varchar(10) not null, certification varchar(3) constraint certi_check check(certification in('UA', 'Adult','UA 13+')),release_date date);
+
+insert into movies values('mv100','Avatar','2h 42m','ENG','3D','action','UA','2022/4/30');
+insert into movies values('mv101','Mission Impossible','1h 39m','ENG','4DX','action','UA','2022/5/1');
+insert into movies values('mv102','Dr. Strange: Multiverse of madness','2h 23m','ENG','2D','action','UA','2022/4/30');
+insert into movies values('mv103','Intersteller','2h 49m','ENG','3D','sci-fi','UA','2022/5/1');
+insert into movies values('mv104','The Conjuring','1h 52m','HIN','4DX','Horror','UA','2022/5/13');
+insert into movies values('mv105','The Conjuring','1h 52m','ENG','3D','Horror','UA','2022/5/13');
+insert into movies values('mv106','The Conjuring','1h 52m','ENG','2D','Horror','UA','2022/5/13');
+
+select * from movies;
+
+create table shows(show_id varchar(10) primary key,movie_id varchar(10) references movies(movie_id),timings varchar(10) not null,hall_no varchar(2) not null);
+insert into shows values('sh182','mv100','1pm','A2');
+insert into shows values('sh184','mv102','5pm','A4');
+insert into shows values('sh185','mv101','10:30am','A1');
+insert into shows values('sh186','mv103','7pm','A2');
+insert into shows values('sh187','mv106','4pm','A3');
+
+select * from shows;
+
+
+create table seat_cat(movie_id varchar(10) references movies(movie_id),Pprice int(4),Gprice int(4),Sprice int(4));
+insert into seat_cat values ('mv100',270,250,230);
+insert into seat_cat values ('mv101',290,260,240);
+insert into seat_cat values ('mv102',290,260,240);
+insert into seat_cat values ('mv103',280,240,220);
+insert into seat_cat values ('mv104',300,280,250);
+insert into seat_cat values ('mv105',290,270,240);
+insert into seat_cat values ('mv106',290,270,240);
+
+select * from seat_cat;
+
+
+create table bookings(movie_id varchar(10) references movies(movie_id),show_id varchar(10) ,seat_type varchar(10) constraint seat_check check(seat_type in('P', 'G','S')),hall_no varchar(2) not null,timings varchar(10) not null,book_date date not null,Seatno varchar(4) not null,price int(4) ,constraint show_seat primary key(show_id,seatno));
+
+
+insert into bookings values('mv100','sh182','G','A2','1pm','2022/4/29','J5',null);
+insert into bookings values('mv102','sh184','P','A4','5pm','2022/4/30','L10',null);
+insert into bookings values('mv101','sh185','P','A1','10:30am','2022/4/30','J5',null);
+insert into bookings values('mv103','sh186','S','A2','7pm','2022/4/30','B7',null);
+insert into bookings values('mv106','sh187','S','A3','4pm','2022/4/30','B2',null);
+
+UPDATE bookings 
+   SET price=(SELECT CASE 
+   WHEN (bookings.seat_type='P') THEN (select Pprice FROM seat_cat WHERE bookings.movie_id=seat_cat.movie_id) 
+   WHEN (bookings.seat_type='G') THEN (select Gprice FROM seat_cat WHERE bookings.movie_id=seat_cat.movie_id)
+   ELSE (select Sprice FROM seat_cat WHERE bookings.movie_id=seat_cat.movie_id) END from dual);
+
+select * from bookings;
+
+
+
+
+
+-------------------------------------
+-- P->1
+-- G->2
+-- S->3
+
+drop table seat_cat;
+
+
+
+drop table movies;
+
+
+update bookings set price=(select Pprice from seat_cat where movie_id='mv100') where seat_type ='G' AND movie_id ='mv100';
+update bookings set price=(select Pprice from seat_cat where movie_id='mv102') where seat_type ='P' AND movie_id ='mv102';
+update bookings set price=(select Pprice from seat_cat where movie_id='mv101') where seat_type ='P' AND movie_id ='mv101';
+update bookings set price=(select Pprice from seat_cat where movie_id='mv103') where seat_type ='S' AND movie_id ='mv103';
+update bookings set price=(select Pprice from seat_cat where movie_id='mv106') where seat_type ='S' AND movie_id ='mv106';
+
+select * from bookings;
+drop table bookings;
+
+
+//time data type but no?
+
+drop table bookings;
